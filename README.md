@@ -165,7 +165,7 @@ lib/
 1. **Clone/Download project**
 
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/sniren210/skilltest_trimitra
    cd skilltest_trimitra
    ```
 
@@ -473,26 +473,6 @@ flutter packages pub run build_runner build --delete-conflicting-outputs
 - **Architecture**: Clean separation of concerns
 - **Maintainability**: Well-documented code
 
-## 👥 Contributing
-
-### Development Workflow
-
-1. Fork repository
-2. Create feature branch (`git checkout -b feature/amazing-feature`)
-3. Follow code style guidelines
-4. Add tests untuk new features
-5. Commit changes (`git commit -m 'Add amazing feature'`)
-6. Push branch (`git push origin feature/amazing-feature`)
-7. Create Pull Request
-
-### Code Style Guidelines
-
-- Follow official Flutter/Dart style guide
-- Use meaningful variable names
-- Add documentation untuk public APIs
-- Keep functions small dan focused
-- Use provider pattern untuk state management
-
 ## � Documentation
 
 ### 📖 Complete Documentation
@@ -502,7 +482,7 @@ flutter packages pub run build_runner build --delete-conflicting-outputs
 
 ### 📱 Demo & Screenshots
 
-- **[App Screenshots](./docs/images/README.md)** - Visual demo aplikasi
+- **[App Screenshots](./docs/README.md)** - Visual demo aplikasi
 - **Live Demo**: Test langsung dengan build aplikasi atau [Disini](./docs/app-release.apk)
 
 ### 🎯 Quick Links
