@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "241743141247",
+    "project_id": "skill-test-trimitra",
+    "storage_bucket": "skill-test-trimitra.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:241743141247:android:44eaa7fd0da0a80bca624a",
+        "android_client_info": {
+          "package_name": "com.example.skilltest_trimitra"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBtC9aqcDKPm4THZo1zO3z5tvaKmQOYBJI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
