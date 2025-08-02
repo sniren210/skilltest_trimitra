@@ -4,12 +4,23 @@ import 'package:path_provider/path_provider.dart';
 
 class CameraService {
   static final ImagePicker _picker = ImagePicker();
+  static CameraDevice _currentCamera = CameraDevice.front;
 
-  static Future<String?> takeSelfie() async {
+  static CameraDevice get currentCamera => _currentCamera;
+
+  static void switchCamera() {
+    _currentCamera = _currentCamera == CameraDevice.front 
+        ? CameraDevice.rear 
+        : CameraDevice.front;
+  }
+
+  static Future<String?> takeSelfie({CameraDevice? cameraDevice}) async {
     try {
+      final CameraDevice deviceToUse = cameraDevice ?? _currentCamera;
+      
       final XFile? photo = await _picker.pickImage(
         source: ImageSource.camera,
-        preferredCameraDevice: CameraDevice.front,
+        preferredCameraDevice: deviceToUse,
         imageQuality: 80,
       );
 
@@ -32,5 +43,9 @@ class CameraService {
   static Future<bool> checkCameraPermission() async {
     // Permission checking is handled by image_picker plugin automatically
     return true;
+  }
+
+  static String getCameraLabel() {
+    return _currentCamera == CameraDevice.front ? 'Front Camera' : 'Rear Camera';
   }
 }

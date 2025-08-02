@@ -242,6 +242,196 @@ class _AttendanceScreenState extends State<AttendanceScreen> with TickerProvider
     }
   }
 
+  void _showFullMapDialog() {
+    final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
+    final isDark = themeProvider.isDarkMode;
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          backgroundColor: Colors.transparent,
+          insetPadding: const EdgeInsets.all(16),
+          child: Container(
+            width: double.infinity,
+            height: MediaQuery.of(context).size.height * 0.8,
+            decoration: BoxDecoration(
+              color: isDark ? Colors.grey[900] : Colors.white,
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.3),
+                  blurRadius: 20,
+                  offset: const Offset(0, 10),
+                ),
+              ],
+            ),
+            child: Column(
+              children: [
+                // Header
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    gradient: AppTheme.primaryGradient,
+                    borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(16),
+                      topRight: Radius.circular(16),
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      const Icon(
+                        Icons.map,
+                        color: Colors.white,
+                        size: 24,
+                      ),
+                      const SizedBox(width: 12),
+                      const Expanded(
+                        child: Text(
+                          'Full Location Map',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      IconButton(
+                        onPressed: () => Navigator.of(context).pop(),
+                        icon: const Icon(
+                          Icons.close,
+                          color: Colors.white,
+                        ),
+                        style: IconButton.styleFrom(
+                          backgroundColor: Colors.white.withOpacity(0.2),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                
+                // Location Info
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(16),
+                  color: isDark ? Colors.grey[800] : Colors.grey[50],
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(6),
+                            decoration: BoxDecoration(
+                              color: _isLocationValid ? Colors.green : Colors.red,
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                            child: Icon(
+                              _isLocationValid ? Icons.check : Icons.close,
+                              color: Colors.white,
+                              size: 16,
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              _locationStatus,
+                              style: const TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      if (_detailedAddress.isNotEmpty) ...[
+                        const SizedBox(height: 8),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Icon(
+                              Icons.place,
+                              size: 16,
+                              color: Colors.grey[600],
+                            ),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Text(
+                                _detailedAddress,
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.grey[600],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+                
+                // Full Map
+                Expanded(
+                  child: Container(
+                    margin: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: isDark ? Colors.grey[700]! : Colors.grey[300]!,
+                      ),
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(12),
+                      child: LocationMapWidget(
+                        userLatitude: _currentPosition?.latitude,
+                        userLongitude: _currentPosition?.longitude,
+                        height: double.infinity,
+                      ),
+                    ),
+                  ),
+                ),
+                
+                // Action Buttons
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: OutlinedButton.icon(
+                          onPressed: _isGettingLocation ? null : _getCurrentLocation,
+                          label: const Text('Refresh Location'),
+                          style: OutlinedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: ElevatedButton.icon(
+                          onPressed: () => Navigator.of(context).pop(),
+                          label: const Text('Close'),
+                          style: ElevatedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                            backgroundColor: AppTheme.primaryColor,
+                            foregroundColor: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
@@ -616,11 +806,23 @@ class _AttendanceScreenState extends State<AttendanceScreen> with TickerProvider
                                   ),
                                 ),
                                 const SizedBox(width: 12),
-                                const Text(
-                                  'Location Map',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
+                                const Expanded(
+                                  child: Text(
+                                    'Location Map',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                                IconButton(
+                                  onPressed: () => _showFullMapDialog(),
+                                  icon: const Icon(Icons.fullscreen),
+                                  tooltip: 'View Full Map',
+                                  style: IconButton.styleFrom(
+                                    backgroundColor: isDark 
+                                        ? Colors.grey[800] 
+                                        : Colors.grey[100],
                                   ),
                                 ),
                               ],
@@ -658,11 +860,56 @@ class _AttendanceScreenState extends State<AttendanceScreen> with TickerProvider
                                 ),
                               ),
                               const SizedBox(width: 12),
-                              const Text(
-                                'Selfie Photo',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const Text(
+                                      'Selfie Photo',
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    Text(
+                                      CameraService.getCameraLabel(),
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        color: isDark ? Colors.grey[400] : Colors.grey[600],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              IconButton(
+                                onPressed: _hasAttendedToday ? null : () {
+                                  setState(() {
+                                    CameraService.switchCamera();
+                                  });
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Row(
+                                        children: [
+                                          const Icon(Icons.flip_camera_ios, color: Colors.white),
+                                          const SizedBox(width: 8),
+                                          Text('Switched to ${CameraService.getCameraLabel()}'),
+                                        ],
+                                      ),
+                                      backgroundColor: AppTheme.primaryColor,
+                                      behavior: SnackBarBehavior.floating,
+                                      duration: const Duration(seconds: 2),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                    ),
+                                  );
+                                },
+                                icon: const Icon(Icons.flip_camera_ios),
+                                tooltip: 'Switch Camera',
+                                style: IconButton.styleFrom(
+                                  backgroundColor: isDark 
+                                      ? Colors.grey[800] 
+                                      : Colors.grey[100],
                                 ),
                               ),
                             ],
